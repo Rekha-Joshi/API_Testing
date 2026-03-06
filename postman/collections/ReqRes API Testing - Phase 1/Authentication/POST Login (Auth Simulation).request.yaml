@@ -1,0 +1,30 @@
+$kind: http-request
+url: "{{base_url}}/api/login"
+method: POST
+headers:
+  x-api-key: "{{api_key}}"
+body:
+  type: json
+  content: |-
+    {
+      "email": "eve.holt@reqres.in",
+      "password": "cityslicka"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      const jsonData = pm.response.json(); // Parse the response body as JSON
+
+      pm.test("Status code is 200", () => {
+      	pm.response.to.have.status(200);
+      })
+      pm.test("Response has token", () => {
+      	pm.expect(jsonData).to.have.property("token");
+      	pm.expect(jsonData.token).to.be.not.empty;
+      	pm.environment.set("token", jsonData.token);
+      })
+      pm.test("Response time is under 500ms", () => {
+      	pm.expect(pm.response.responseTime).to.be.below(500);
+      })
+    language: text/javascript
+order: 1000
