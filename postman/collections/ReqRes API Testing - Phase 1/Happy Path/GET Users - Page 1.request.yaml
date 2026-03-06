@@ -1,0 +1,42 @@
+$kind: http-request
+url: "{{base_url}}/api/users?page=1"
+method: GET
+headers:
+  x-api-key: "{{api_key}}"
+queryParams:
+  page: "1"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200", () => {
+      	pm.response.to.have.status(200);
+      } 
+      )
+      pm.test("Page number is 1", () =>{
+      	const jsonData = pm.response.json();
+      	pm.expect(jsonData.page).to.equal(1);
+      })
+      pm.test("Data array is not empty", () => {
+      	const jsonData = pm.response.json();
+      	pm.expect(jsonData.data.length).to.be.greaterThan(0);
+      })
+      pm.test("Data is an array", () => {
+      	const jsonData = pm.response.json();
+      	pm.expect(jsonData.data).to.be.an("array");
+      })
+      pm.test("Returned records match per page count", ()=> {
+      	const jsonData = pm.response.json();
+      	pm.expect(jsonData.data.length).to.equal(jsonData.per_page);
+      })
+      pm.test("Each user has required fields", () =>{
+      	const data = pm.response.json().data;
+      	data.forEach(user =>{
+      		pm.expect(user).to.have.property("id");
+      		pm.expect(user).to.have.property("email");
+      		pm.expect(user).to.have.property("first_name");
+      		pm.expect(user).to.have.property("last_name");
+      		pm.expect(user).to.have.property("avatar");
+      	})
+      })
+    language: text/javascript
+order: 1000

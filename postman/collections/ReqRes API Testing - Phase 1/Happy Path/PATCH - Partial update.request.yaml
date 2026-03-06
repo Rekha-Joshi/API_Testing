@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{base_url}}/api/users/{{id}}"
+method: GET
+headers:
+  x-api-key: "{{api_key}}"
+body:
+  type: json
+  content: |-
+    {
+    	"job": "Lead QA Engineer"
+    }
+order: 6000

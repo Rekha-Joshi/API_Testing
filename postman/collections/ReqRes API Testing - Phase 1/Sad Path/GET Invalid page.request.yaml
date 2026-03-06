@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{base_url}}/api/users?page=9999"
+method: GET
+headers:
+  x-api-key: reqres_9d93ce88ffb745849df1884242eae8cb
+queryParams:
+  page: "9999"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200", () => {
+      	pm.response.to.have.status(200);
+      })
+      pm.test("Data array is empty for the invalid page", () => {
+      	pm.expect(pm.response.json().data.length).to.eql(0);
+      })
+    language: text/javascript
+order: 1000
