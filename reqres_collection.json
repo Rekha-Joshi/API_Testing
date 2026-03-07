@@ -1,0 +1,614 @@
+{
+  "info": {
+    "_postman_id": "e3561691-f6d2-428d-994f-2914a40450c7",
+    "name": "ReqRes API Testing - Phase 1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "13702779"
+  },
+  "item": [
+    {
+      "name": "Sad Path",
+      "item": [
+        {
+          "name": "GET Invalid page",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", () => {",
+                  "\tpm.response.to.have.status(200);",
+                  "})",
+                  "pm.test(\"Data array is empty for the invalid page\", () => {",
+                  "\tpm.expect(pm.response.json().data.length).to.eql(0);",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "reqres_9d93ce88ffb745849df1884242eae8cb",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users?page=9999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "9999"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Missing field",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "GET Invalid user ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "\tpm.response.to.have.status(404);",
+                  "})",
+                  "pm.test(\"Response time is less than 200ms\", function () {",
+                  "\tpm.expect(pm.response.responseTime).to.be.below(200);",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "reqres_9d93ce88ffb745849df1884242eae8cb",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "999"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Happy Path",
+      "item": [
+        {
+          "name": "GET Users - Page 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", () => {",
+                  "\tpm.response.to.have.status(200);",
+                  "} ",
+                  ")",
+                  "pm.test(\"Page number is 1\", () =>{",
+                  "\tconst jsonData = pm.response.json();",
+                  "\tpm.expect(jsonData.page).to.equal(1);",
+                  "})",
+                  "pm.test(\"Data array is not empty\", () => {",
+                  "\tconst jsonData = pm.response.json();",
+                  "\tpm.expect(jsonData.data.length).to.be.greaterThan(0);",
+                  "})",
+                  "pm.test(\"Data is an array\", () => {",
+                  "\tconst jsonData = pm.response.json();",
+                  "\tpm.expect(jsonData.data).to.be.an(\"array\");",
+                  "})",
+                  "pm.test(\"Returned records match per page count\", ()=> {",
+                  "\tconst jsonData = pm.response.json();",
+                  "\tpm.expect(jsonData.data.length).to.equal(jsonData.per_page);",
+                  "})",
+                  "pm.test(\"Each user has required fields\", () =>{",
+                  "\tconst data = pm.response.json().data;",
+                  "\tdata.forEach(user =>{",
+                  "\t\tpm.expect(user).to.have.property(\"id\");",
+                  "\t\tpm.expect(user).to.have.property(\"email\");",
+                  "\t\tpm.expect(user).to.have.property(\"first_name\");",
+                  "\t\tpm.expect(user).to.have.property(\"last_name\");",
+                  "\t\tpm.expect(user).to.have.property(\"avatar\");",
+                  "\t})",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users?page=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Users - Page 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", ()=> {",
+                  "\tpm.response.to.have.status(200);",
+                  "})",
+                  "pm.test(\"Page number is 2\", () => {",
+                  "\tpm.expect(pm.response.json().page).to.be.equal(2);",
+                  "})",
+                  "pm.test(\"Data is an array and not empty\", ()=> {",
+                  "\tconst jsonData = pm.response.json();",
+                  "\tpm.expect(jsonData.data).to.be.an(\"array\");",
+                  "\tpm.expect(jsonData.data.length).to.be.greaterThan(0);",
+                  "})",
+                  "pm.test(\"Returned records match per page count\", ()=> {",
+                  "\tconst jsonData = pm.response.json();",
+                  "\tpm.expect(jsonData.data.length).to.be.equal(jsonData.per_page)",
+                  "})",
+                  "pm.test(\"Each user has required fields\", ()=> {",
+                  "\tconst data = pm.response.json().data;",
+                  "\tdata.forEach(user => {",
+                  "\t\tpm.expect(user).to.have.property(\"id\");",
+                  "\t\tpm.expect(user).to.have.property(\"email\");",
+                  "\t\tpm.expect(user).to.have.property(\"first_name\");",
+                  "\t\tpm.expect(user).to.have.property(\"last_name\");",
+                  "\t\tpm.expect(user).to.have.property(\"avatar\");",
+                  "\t})",
+                  "})",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users?page=2",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Single User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Create User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", ()=> {",
+                  "\tpm.response.to.have.status(201)",
+                  "})",
+                  "pm.test(\"ID is generated successfully\", ()=> {",
+                  "\tconst jsonData = pm.response.json();",
+                  "\tpm.expect(jsonData).to.have.property(\"id\");",
+                  "\tpm.environment.set(\"id\",jsonData.id);",
+                  "})",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"name\": \"Rekha Joshi\",\n\t\"job\": \"QA Engineer\" \n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT - Update a user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "\tpm.response.to.have.status(200)",
+                  "})",
+                  "pm.test(\"Response has updatedAt property\", ()=> {",
+                  "\tpm.expect(pm.response.json()).to.have.property('updatedAt');",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"name\": \"Rekha\",\n\t\"job\":\"Senior QA Engineer\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/{{id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH - Partial update",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"job\": \"Lead QA Engineer\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/{{id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE - Remove a user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Sttus code is 204\", () => {",
+                  "\tpm.response.to.have.status(204);",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/2",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "POST Login (Auth Simulation)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json(); // Parse the response body as JSON",
+                  "",
+                  "pm.test(\"Status code is 200\", () => {",
+                  "\tpm.response.to.have.status(200);",
+                  "})",
+                  "pm.test(\"Response has token\", () => {",
+                  "\tpm.expect(jsonData).to.have.property(\"token\");",
+                  "\tpm.expect(jsonData.token).to.be.not.empty;",
+                  "\tpm.environment.set(\"token\", jsonData.token);",
+                  "})",
+                  "pm.test(\"Response time is under 500ms\", () => {",
+                  "\tpm.expect(pm.response.responseTime).to.be.below(500);",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"eve.holt@reqres.in\",\n  \"password\": \"cityslicka\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Negative Test – Missing Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "pm.test(\"Status code is 400\", () =>{",
+                  "\tpm.response.to.have.status(400);",
+                  "})",
+                  "pm.test(\"Response has error message\", () => {",
+                  "\tpm.expect(jsonData).to.have.property(\"error\");",
+                  "\tpm.expect(jsonData.error).to.eql(\"Missing email or username\");",
+                  "})",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"jasdhfjksd\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": ""
+    },
+    {
+      "key": "api_key",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
