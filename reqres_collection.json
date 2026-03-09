@@ -59,9 +59,52 @@
         },
         {
           "name": "POST Missing field",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Response status code is 400\", function () {",
+                  "\tpm.response.to.have.status(400);",
+                  "})",
+                  "pm.test(\"Response body contains error message\", function () {",
+                  "\tpm.expect(pm.response.text()).to.include(\"invalid_json\");",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
-            "method": "GET",
-            "header": []
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"name\": \"XYZ\",\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
           },
           "response": []
         },
@@ -603,12 +646,11 @@
   "variable": [
     {
       "key": "base_url",
-      "value": ""
+      "value": "https://reqres.in"
     },
     {
       "key": "api_key",
-      "value": "",
-      "type": "default"
+      "value": "reqres_9d93ce88ffb745849df1884242eae8cb"
     }
   ]
 }
