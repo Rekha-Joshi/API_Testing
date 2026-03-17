@@ -1,0 +1,25 @@
+## Performance Testing (JMeter)
+Basic load testing was performed using Apache JMeter on the ReqRes public API.
+
+### Test Setup
+- Endpoint: GET /api/users?page=1
+- Tool: Apache JMeter
+- Virtual Users: 2
+- Ramp-up Period: 10 seconds
+- Loop Count: 2
+- Constant Timer: 1000ms delay between requests
+
+### Metrics Captured
+- Response Time (Average, min and max)
+- Throughput (requests per unit of time)
+- Error Percentage
+
+### Observations
+
+- With controlled load and delays, API response was stable with 0% error rate.
+- When load was increased, the API starts to fail with error 429(too many requests), indicating the rate limit on public endpoint
+
+### Conclusions
+
+- JMeter was was used to simulate concurrent users and analyze API behaviour under load
+- The test highlights the importance of controlled environment for accurate perfomance. 
