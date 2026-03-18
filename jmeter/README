@@ -23,3 +23,14 @@ Basic load testing was performed using Apache JMeter on the ReqRes public API.
 
 - JMeter was was used to simulate concurrent users and analyze API behaviour under load
 - The test highlights the importance of controlled environment for accurate perfomance. 
+
+## Screenshots
+
+### Newman Report
+![Newman Report](screenshots/newman_report.png)
+
+### JMeter Summary
+![JMeter Summary](screenshots/jmeter_summary.png)
+
+### Postman Tests
+![Postman Tests](screenshots/postman_tests.png)
